@@ -1,5 +1,18 @@
 # MapTiler Client Changelog
 
+## 2.6.0
+### New Features
+- Bumps 'Streets' & 'Landscape' styles (and their variants) to new v4 styles.
+- Adds the new 'Base' style and its variants.
+- Namespaces V4 and V2 Styles and adds mechanism for switching to defaults.
+
+### Bug Fixes
+None
+
+### Others
+- Adds custom deprecation warnings.
+- Deprecates the older v2 styles and adds warnings regarding their usage.
+
 ## 2.5.1
 ### New Features
 None

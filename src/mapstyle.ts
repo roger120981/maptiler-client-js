@@ -32,6 +32,7 @@ export type MapStylePreset = {
   description: string;
   variants: Array<{
     deprecated?: boolean;
+    deprecationMessage?: string;
     id: string;
     name: string;
     variantType: string;
@@ -79,6 +80,11 @@ export class MapStyleVariant {
      * Whether this variant is deprecated or not
      */
     public deprecated: boolean = false,
+
+    /**
+     * Message to display when the variant is deprecated
+     */
+    public deprecationMessage?: string,
   ) {}
 
   /**
@@ -179,11 +185,14 @@ export class MapStyleVariant {
   warnIfDeprecated(variant: MapStyleVariant = this): MapStyleVariant {
     if (!variant.deprecated) return variant;
 
-    const name = variant.getFullName();
-
-    console.warn(
-      `Style "${name}" is deprecated and will be removed in a future version.`,
-    );
+    if (variant.deprecationMessage) {
+      console.warn(variant.deprecationMessage);
+    } else {
+      const name = variant.getFullName();
+      console.warn(
+        `Style "${name}" is deprecated and will be removed in a future version.`,
+      );
+    }
 
     return variant;
   }
@@ -285,7 +294,11 @@ export type MapStyleType = {
   /**
    * Suitable for navigation, with high level of detail on urban areas, plenty of POIs and 3D buildings
    */
-  STREETS: ReferenceMapStyle & {
+  STREETS: MapStyleType["STREETS_V2"];
+  /**
+   * Suitable for navigation, with high level of detail on urban areas, plenty of POIs and 3D buildings
+   */
+  STREETS_V2: ReferenceMapStyle & {
     /**
      * Suitable for navigation, with high level of detail on urban areas, plenty of POIs and 3D buildings.
      */
@@ -299,13 +312,49 @@ export type MapStyleType = {
      */
     LIGHT: MapStyleVariant;
     /**
-     * Suitable for navigation, with high level of detail on urban areas, plenty of POIs and 3D buildings, in blue night mode.
+     * Suitable for navigation, with high level of detail on urban areas, plenty of POIs and 3D buildings, in night mode.
      */
     NIGHT: MapStyleVariant;
     /**
      * Suitable for navigation, with high level of detail on urban areas, plenty of POIs and 3D buildings, with a pastel color palette.
      */
     PASTEL: MapStyleVariant;
+  };
+  /**
+   * Suitable for navigation, with high level of detail on urban areas, plenty of POIs and 3D buildings
+   */
+  STREETS_V4: ReferenceMapStyle & {
+    /**
+     * Suitable for navigation, with high level of detail on urban areas, plenty of POIs and 3D buildings.
+     */
+    DEFAULT: MapStyleVariant;
+    /**
+     * Suitable for navigation, with high level of detail on urban areas, plenty of POIs and 3D buildings, in dark mode.
+     */
+    DARK: MapStyleVariant;
+    /**
+     * Suitable for navigation, with high level of detail on urban areas, plenty of POIs and 3D buildings, with a pastel color palette.
+     */
+    PASTEL: MapStyleVariant;
+  };
+
+  BASE_V4: ReferenceMapStyle & {
+    /**
+     * Light and informative map, for general use.
+     */
+    DEFAULT: MapStyleVariant;
+    /**
+     * Darker version of the base style, for night use.
+     */
+    DARK: MapStyleVariant;
+    /**
+     * Light version of the base style, for day use.
+     */
+    LIGHT: MapStyleVariant;
+    /**
+     * A clear and informative map, for general use.
+     */
+    AI: MapStyleVariant;
   };
 
   /**
@@ -361,6 +410,23 @@ export type MapStyleType = {
    * A minimalist street-oriented style without POI
    */
   BASIC: ReferenceMapStyle & {
+    /**
+     * A minimalist street-oriented style without POI
+     */
+    DEFAULT: MapStyleVariant;
+    /**
+     * A minimalist street-oriented style without POI, in dark mode
+     */
+    DARK: MapStyleVariant;
+    /**
+     * A minimalist street-oriented style without POI, in light mode
+     */
+    LIGHT: MapStyleVariant;
+  };
+  /**
+   * A minimalist street-oriented style without POI
+   */
+  BASIC_V2: ReferenceMapStyle & {
     /**
      * A minimalist street-oriented style without POI
      */
@@ -526,7 +592,24 @@ export type MapStyleType = {
     LIGHT: MapStyleVariant;
   };
 
-  LANDSCAPE: ReferenceMapStyle & {
+  LANDSCAPE: MapStyleType["LANDSCAPE_V2"];
+
+  LANDSCAPE_V2: ReferenceMapStyle & {
+    /**
+     *  Light terrain map for data overlays and visualisations
+     */
+    DEFAULT: MapStyleVariant;
+    /**
+     *  Dark terrain map for data overlays and visualisations
+     */
+    DARK: MapStyleVariant;
+    /**
+     *  Vivid terrain map for data overlays and visualisations
+     */
+    VIVID: MapStyleVariant;
+  };
+
+  LANDSCAPE_V4: ReferenceMapStyle & {
     /**
      *  Light terrain map for data overlays and visualisations
      */
@@ -561,42 +644,115 @@ export type MapStyleType = {
 
 export const mapStylePresetList: Array<MapStylePreset> = [
   {
-    referenceStyleID: "STREETS",
+    referenceStyleID: "STREETS_V2",
     name: "Streets",
     description: "",
     variants: [
       {
         id: "streets-v2",
+        name: "Default v2",
+        variantType: "DEFAULT",
+        description: "",
+        imageURL: "",
+        deprecated: true,
+        deprecationMessage: `"streets-v2" is deprecated, use "streets-v4" instead`,
+      },
+      {
+        id: "streets-v2-dark",
+        name: "Dark v2",
+        variantType: "DARK",
+        description: "",
+        imageURL: "",
+        deprecated: true,
+        deprecationMessage: `"streets-v2-dark" is deprecated, use "streets-v4-dark" instead`,
+      },
+      {
+        id: "streets-v2-light",
+        name: "Light v2",
+        variantType: "LIGHT",
+        description: "",
+        imageURL: "",
+        deprecated: true,
+        deprecationMessage: `"streets-v2-light" is deprecated, use "streets-v4-light" instead`,
+      },
+      {
+        id: "streets-v2-night",
+        name: "Night v2",
+        variantType: "NIGHT",
+        description: "",
+        imageURL: "",
+        deprecated: true,
+        deprecationMessage: `"streets-v2-night" is deprecated, use "streets-v4-night" instead`,
+      },
+      {
+        id: "streets-v2-pastel",
+        name: "Pastel v2",
+        variantType: "PASTEL",
+        description: "",
+        imageURL: "",
+        deprecated: true,
+        deprecationMessage: `"streets-v2-pastel" is deprecated, use "streets-v4-pastel" instead`,
+      },
+    ],
+  },
+  {
+    referenceStyleID: "STREETS_V4",
+    name: "Streets",
+    description: "",
+    variants: [
+      {
+        id: "streets-v4",
         name: "Default",
         variantType: "DEFAULT",
         description: "",
         imageURL: "",
       },
       {
-        id: "streets-v2-dark",
+        id: "streets-v4-dark",
         name: "Dark",
         variantType: "DARK",
         description: "",
         imageURL: "",
       },
       {
-        id: "streets-v2-light",
+        id: "streets-v4-pastel",
+        name: "Pastel",
+        variantType: "PASTEL",
+        description: "",
+        imageURL: "",
+      },
+    ],
+  },
+  {
+    referenceStyleID: "BASE_V4",
+    name: "Base",
+    description: "",
+    variants: [
+      {
+        id: "base-v4",
+        name: "Default",
+        variantType: "DEFAULT",
+        description: "",
+        imageURL: "",
+      },
+      {
+        id: "base-v4-dark",
+        name: "Dark",
+        variantType: "DARK",
+        description: "",
+        imageURL: "",
+      },
+      {
+        id: "base-v4-light",
         name: "Light",
         variantType: "LIGHT",
         description: "",
         imageURL: "",
       },
       {
-        id: "streets-v2-night",
-        name: "Night",
+        id: "base-v4-ai",
+        name: "Base AI",
         variantType: "NIGHT",
-        description: "",
-        imageURL: "",
-      },
-      {
-        id: "streets-v2-pastel",
-        name: "Pastel",
-        variantType: "PASTEL",
         description: "",
         imageURL: "",
       },
@@ -678,7 +834,7 @@ export const mapStylePresetList: Array<MapStylePreset> = [
   },
 
   {
-    referenceStyleID: "BASIC",
+    referenceStyleID: "BASIC_V2",
     name: "Basic",
     description: "",
     variants: [
@@ -688,6 +844,8 @@ export const mapStylePresetList: Array<MapStylePreset> = [
         variantType: "DEFAULT",
         description: "",
         imageURL: "",
+        deprecated: true,
+        deprecationMessage: `"basic-v2" is deprecated, use "basic-v4" instead`,
       },
       {
         id: "basic-v2-dark",
@@ -979,7 +1137,7 @@ export const mapStylePresetList: Array<MapStylePreset> = [
     ],
   },
   {
-    referenceStyleID: "LANDSCAPE",
+    referenceStyleID: "LANDSCAPE_V2",
     name: "Landscape",
     description: "Terrain map for data overlays and visualisations",
     variants: [
@@ -989,6 +1147,8 @@ export const mapStylePresetList: Array<MapStylePreset> = [
         variantType: "DEFAULT",
         description: "",
         imageURL: "",
+        deprecated: true,
+        deprecationMessage: `"landscape" is deprecated, use "landscape-v4" instead`,
       },
       {
         id: "landscape-dark",
@@ -996,9 +1156,41 @@ export const mapStylePresetList: Array<MapStylePreset> = [
         variantType: "DARK",
         description: "",
         imageURL: "",
+        deprecated: true,
+        deprecationMessage: `"landscape-dark" is deprecated, use "landscape-v4-dark" instead`,
       },
       {
         id: "landscape-vivid",
+        name: "Vivid",
+        variantType: "VIVID",
+        description: "",
+        imageURL: "",
+        deprecated: true,
+        deprecationMessage: `"landscape-vivid" is deprecated, use "landscape-v4-vivid" instead`,
+      },
+    ],
+  },
+  {
+    referenceStyleID: "LANDSCAPE_V4",
+    name: "Landscape",
+    description: "Terrain map for data overlays and visualisations",
+    variants: [
+      {
+        id: "landscape-v4",
+        name: "Default",
+        variantType: "DEFAULT",
+        description: "",
+        imageURL: "",
+      },
+      {
+        id: "landscape-v4-dark",
+        name: "Dark",
+        variantType: "DARK",
+        description: "",
+        imageURL: "",
+      },
+      {
+        id: "landscape-v4-vivid",
         name: "Vivid",
         variantType: "VIVID",
         description: "",
@@ -1007,6 +1199,50 @@ export const mapStylePresetList: Array<MapStylePreset> = [
     ],
   },
 ];
+
+/**
+ * Map of default reference styles to their versioned counterparts.
+ * This is make it easier to version the default reference styles.
+ * Note: the type definition `MapStyleType` will need to be updated to reflect this.
+ */
+const defaultReferenceStyleMap = {
+  STREETS: "STREETS_V2",
+  BASIC: "BASIC_V2",
+  LANDSCAPE: "LANDSCAPE_V2",
+};
+
+function applyVersionToDefaultReferenceStyle(
+  defaultKey: string,
+  referenceKey: string,
+) {
+  if (
+    mapStylePresetList.find((style) => style.referenceStyleID === defaultKey)
+  ) {
+    console.warn(
+      `Default reference style ${defaultKey} already exists, it will be overwritten...`,
+    );
+  }
+
+  const versionedMapStyle = mapStylePresetList.find(
+    (style) => style.referenceStyleID === referenceKey,
+  );
+  if (!versionedMapStyle) {
+    throw new Error(
+      `Versioned map style not found for reference style: ${referenceKey}`,
+    );
+  }
+  const defaultStyle = {
+    ...versionedMapStyle,
+    referenceStyleID: defaultKey,
+  };
+  mapStylePresetList.push(defaultStyle);
+}
+
+Object.entries(defaultReferenceStyleMap).forEach(
+  ([defaultKey, referenceKey]) => {
+    applyVersionToDefaultReferenceStyle(defaultKey, referenceKey);
+  },
+);
 
 function makeReferenceStyleProxy(referenceStyle: ReferenceMapStyle) {
   return new Proxy(referenceStyle, {
